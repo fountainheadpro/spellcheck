@@ -1,10 +1,15 @@
-name := "spellchecker"
+import AssemblyKeys._
 
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.9.1")
+name := "spellchecker"
 
 version := "1.0.0"
 
 scalaVersion := "2.10.1"
+
+assemblySettings
+
+jarName in assembly := "spellchecker.jar"
+
 
 scalacOptions ++= Seq("-deprecation", "-feature")
 
