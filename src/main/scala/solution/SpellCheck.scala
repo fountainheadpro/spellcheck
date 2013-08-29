@@ -182,21 +182,30 @@ object SpellCheck{
   
 object Cli extends App{
   
-  val checker=SpellCheck(Source.fromFile(args(0)))
-  System.out.print(">")
-    
-  for( ln <- io.Source.stdin.getLines ){
-    try{
-	  checker.fix(ln) match {
-	    case None=>println("NO SUGGESTION")
-	    case Some(s)=>println(s)
-	  }
+  def dictionaryFile=args match{
+      case Array(fileName)=>Source.fromFile(fileName)
+      case _=> Source.fromURL(getClass.getResource("/wordsEn.txt"))
     }
-    catch{
-      case e: RuntimeException => println(e.getMessage())
-    }    
-	System.out.print(">")
-  }
+    
   
+  try{  
+	val checker=SpellCheck(dictionaryFile)
+	System.out.print(">")
+	for( ln <- io.Source.stdin.getLines){
+	  try{
+	   checker.fix(ln) match {
+	     case None=>println("NO SUGGESTION")
+		 case Some(s)=>println(s)
+		}
+	  } 
+	  catch{
+	    case e: RuntimeException => println(e.getMessage())
+	  }    
+      System.out.print(">")
+	}
+  }catch{
+    case ex:java.io.FileNotFoundException => System.out.print("Error: Dictionary File Not Found.")
+    case ex:NullPointerException          => System.out.print("Internal dictionary not found.")
+  }
   
 }
